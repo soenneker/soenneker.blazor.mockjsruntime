@@ -7,7 +7,7 @@ using Soenneker.Blazor.MockJsRuntime.Abstract;
 namespace Soenneker.Blazor.MockJsRuntime;
 
 /// <summary>
-/// A simple threadsafe version of IJSRuntime for testing with Blazor
+/// A simple thread-safe version of IJSRuntime for testing with Blazor
 /// </summary>
 public class MockJsRuntime : IMockJsRuntime
 {
@@ -31,6 +31,9 @@ public class MockJsRuntime : IMockJsRuntime
 
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
     {
+        if (cancellationToken.IsCancellationRequested)
+            return ValueTask.FromCanceled<TValue>(cancellationToken);
+
         if (_mockedResults.TryGetValue(identifier, out object? result))
             return ValueTask.FromResult((TValue) result);
 
