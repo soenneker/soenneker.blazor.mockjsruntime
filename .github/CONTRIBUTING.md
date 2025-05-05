@@ -1,4 +1,4 @@
-# Contributing to Soenneker.Blazor.MockJsRuntime
+﻿# Contributing to Soenneker.Blazor.MockJsRuntime
 
 We're excited that you're interested in contributing!
 
