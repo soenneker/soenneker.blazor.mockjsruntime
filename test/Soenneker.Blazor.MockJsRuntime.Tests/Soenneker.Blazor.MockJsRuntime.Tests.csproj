@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Soenneker.Blazor.MockJsRuntime.csproj" />
+        <ProjectReference Include="..\..\src\Soenneker.Blazor.MockJsRuntime\Soenneker.Blazor.MockJsRuntime.csproj" />
     </ItemGroup>
 
     <ItemGroup>
