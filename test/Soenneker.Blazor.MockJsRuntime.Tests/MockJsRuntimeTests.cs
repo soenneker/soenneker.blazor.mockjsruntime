@@ -1,20 +1,19 @@
 using Microsoft.JSInterop;
-using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Tests.HostedUnit;
 
 namespace Soenneker.Blazor.MockJsRuntime.Tests;
 
-[Collection("Collection")]
-public class MockJsRuntimeTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public class MockJsRuntimeTests : HostedUnitTest
 {
     private readonly IJSRuntime _util;
 
-    public MockJsRuntimeTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public MockJsRuntimeTests(Host host) : base(host)
     {
         _util = Resolve<IJSRuntime>(true);
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
