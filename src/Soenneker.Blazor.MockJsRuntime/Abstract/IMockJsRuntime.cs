@@ -2,6 +2,9 @@ using Microsoft.JSInterop;
 
 namespace Soenneker.Blazor.MockJsRuntime.Abstract;
 
+/// <summary>
+/// A simple thread-safe version of IJSRuntime for testing with Blazor
+/// </summary>
 public interface IMockJsRuntime : IJSRuntime
 {
     /// <summary>
