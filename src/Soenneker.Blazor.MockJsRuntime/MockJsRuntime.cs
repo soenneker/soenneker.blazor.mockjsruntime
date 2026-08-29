@@ -9,11 +9,15 @@ namespace Soenneker.Blazor.MockJsRuntime;
 /// <inheritdoc cref="IMockJsRuntime"/>
 public sealed class MockJsRuntime : IMockJsRuntime
 {
+    private static readonly object _nullResult = new();
     private readonly ConcurrentDictionary<string, object> _mockedResults = new();
 
     public void SetupMockResult<T>(string identifier, T result)
     {
-        _mockedResults[identifier] = result!;
+        if (string.IsNullOrWhiteSpace(identifier))
+            throw new ArgumentException("The JavaScript identifier cannot be null, empty, or whitespace.", nameof(identifier));
+
+        _mockedResults[identifier] = result is null ? _nullResult : result;
     }
 
     /// <summary>
@@ -26,7 +30,7 @@ public sealed class MockJsRuntime : IMockJsRuntime
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
     {
         if (_mockedResults.TryGetValue(identifier, out object? result))
-            return ValueTask.FromResult((TValue) result);
+            return ValueTask.FromResult(ReferenceEquals(result, _nullResult) ? default! : (TValue) result);
 
         throw new InvalidOperationException($"No mock setup for identifier: {identifier}");
     }
@@ -45,7 +49,7 @@ public sealed class MockJsRuntime : IMockJsRuntime
             return ValueTask.FromCanceled<TValue>(cancellationToken);
 
         if (_mockedResults.TryGetValue(identifier, out object? result))
-            return ValueTask.FromResult((TValue) result);
+            return ValueTask.FromResult(ReferenceEquals(result, _nullResult) ? default! : (TValue) result);
 
         throw new InvalidOperationException($"No mock setup for identifier: {identifier}");
     }

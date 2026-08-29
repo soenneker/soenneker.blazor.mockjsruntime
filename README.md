@@ -5,34 +5,55 @@
 
 # Soenneker.Blazor.MockJsRuntime
 
-A simple thread-safe version of IJSRuntime for testing with Blazor.
+A small, thread-safe `IJSRuntime` test double that returns results configured by JavaScript identifier.
 
-## Install
+It is intentionally strict and minimal: unconfigured identifiers throw, arguments are ignored, and invocations are not recorded. Use a fuller mocking library when tests need argument matching, call counts, or ordered verification.
+
+## Installation
 
 ```bash
 dotnet add package Soenneker.Blazor.MockJsRuntime
 ```
 
-## Quick start
+## Registration
 
 ```csharp
 using Soenneker.Blazor.MockJsRuntime.Registrars;
-using Microsoft.Extensions.DependencyInjection;
 
-var services = new ServiceCollection();
-var result = services.AddMockJsRuntimeAsScoped();
+services.AddMockJsRuntimeAsScoped();
 ```
 
-Adds `MockJsRuntime` as a scoped service. as `IJSRuntime`.
+The registrar creates one scoped `MockJsRuntime` and exposes that same instance as `MockJsRuntime`, `IMockJsRuntime`, and `IJSRuntime`. Register it only in test service collections; it does not execute JavaScript.
 
-## What you get
+## Configure results
 
-- `IMockJsRuntime` — A simple thread-safe version of IJSRuntime for testing with Blazor.
-- `MockJsRuntimeRegistrar` — A simple threadsafe version of IJSRuntime for testing with Blazor.
+```csharp
+using Microsoft.JSInterop;
+using Soenneker.Blazor.MockJsRuntime.Abstract;
 
-## API at a glance
+IMockJsRuntime mock = services.GetRequiredService<IMockJsRuntime>();
+IJSRuntime js = services.GetRequiredService<IJSRuntime>();
 
-| API | What it does | Result / important behavior |
-| --- | --- | --- |
-| `IMockJsRuntime.SetupMockResult(identifier, result)` | Sets up a mocked result for a specific identifier. | Returns no value; the requested change is complete when the method returns. |
-| `MockJsRuntimeRegistrar.AddMockJsRuntimeAsScoped(services)` | Adds `MockJsRuntime` as a scoped service. as `IJSRuntime`. | The same service collection, so additional registrations can be chained. |
+mock.SetupMockResult("settings.getTheme", "dark");
+
+string theme = await js.InvokeAsync<string>("settings.getTheme");
+```
+
+The generic result type must be assignable to the `TValue` requested by the code under test. A mismatched type produces an `InvalidCastException`. `null` can be configured for nullable/reference results:
+
+```csharp
+mock.SetupMockResult<string?>("storage.get", null);
+string? value = await js.InvokeAsync<string?>("storage.get");
+```
+
+An identifier has one configured result; configuring it again replaces the previous value. Arguments do not affect lookup:
+
+```csharp
+mock.SetupMockResult("math.sum", 10);
+
+int result = await js.InvokeAsync<int>("math.sum", 4, 6);
+```
+
+Calling an identifier without a setup throws `InvalidOperationException`. The cancellation-token overload returns a canceled `ValueTask` when its token is already canceled, before looking up a result.
+
+Module imports are ordinary identifiers. When code calls `InvokeAsync<IJSObjectReference>("import", path)`, configure `"import"` with an `IJSObjectReference` test double whose own methods model the module calls.

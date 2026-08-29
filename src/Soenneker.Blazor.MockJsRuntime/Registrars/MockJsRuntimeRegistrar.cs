@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.JSInterop;
+using Soenneker.Blazor.MockJsRuntime.Abstract;
 
 namespace Soenneker.Blazor.MockJsRuntime.Registrars;
 
@@ -10,13 +11,15 @@ namespace Soenneker.Blazor.MockJsRuntime.Registrars;
 public static class MockJsRuntimeRegistrar
 {
     /// <summary>
-    /// Adds <see cref="MockJsRuntime"/> as a scoped service. <para/> as <see cref="IJSRuntime"/>
+    /// Adds one scoped <see cref="MockJsRuntime"/> instance as <see cref="MockJsRuntime"/>, <see cref="IMockJsRuntime"/>, and <see cref="IJSRuntime"/>.
     /// </summary>
     /// <param name="services">Service collection that receives the registration.</param>
     /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddMockJsRuntimeAsScoped(this IServiceCollection services)
     {
-        services.TryAddSingleton<IJSRuntime, MockJsRuntime>();
+        services.TryAddScoped<MockJsRuntime>();
+        services.TryAddScoped<IMockJsRuntime>(provider => provider.GetRequiredService<MockJsRuntime>());
+        services.TryAddScoped<IJSRuntime>(provider => provider.GetRequiredService<MockJsRuntime>());
 
         return services;
     }
