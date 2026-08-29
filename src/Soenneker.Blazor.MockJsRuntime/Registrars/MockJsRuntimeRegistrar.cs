@@ -12,6 +12,8 @@ public static class MockJsRuntimeRegistrar
     /// <summary>
     /// Adds <see cref="MockJsRuntime"/> as a scoped service. <para/> as <see cref="IJSRuntime"/>
     /// </summary>
+    /// <param name="services">Service collection that receives the registration.</param>
+    /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddMockJsRuntimeAsScoped(this IServiceCollection services)
     {
         services.TryAddSingleton<IJSRuntime, MockJsRuntime>();

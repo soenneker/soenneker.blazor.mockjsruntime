@@ -19,12 +19,12 @@ public sealed class MockJsRuntime : IMockJsRuntime
     }
 
     /// <summary>
-    /// Executes the invoke async operation.
+    /// Invokes async.
     /// </summary>
-    /// <typeparam name="TValue">The TValue type.</typeparam>
-    /// <param name="identifier">The identifier.</param>
-    /// <param name="args">The args.</param>
-    /// <returns>A task containing the result of the operation.</returns>
+    /// <typeparam name="TValue">Type of value stored or returned by the operation.</typeparam>
+    /// <param name="identifier">Identifier of the target value.</param>
+    /// <param name="args">Command-line arguments passed to the application.</param>
+    /// <returns>A task whose result is the value returned by invoke Async.</returns>
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
     {
         if (_mockedResults.TryGetValue(identifier, out object? result))
@@ -34,13 +34,13 @@ public sealed class MockJsRuntime : IMockJsRuntime
     }
 
     /// <summary>
-    /// Executes the invoke async operation.
+    /// Invokes async.
     /// </summary>
-    /// <typeparam name="TValue">The TValue type.</typeparam>
-    /// <param name="identifier">The identifier.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <param name="args">The args.</param>
-    /// <returns>A task containing the result of the operation.</returns>
+    /// <typeparam name="TValue">Type of value stored or returned by the operation.</typeparam>
+    /// <param name="identifier">Identifier of the target value.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
+    /// <param name="args">Command-line arguments passed to the application.</param>
+    /// <returns>A task whose result is the value returned by invoke Async.</returns>
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
     {
         if (cancellationToken.IsCancellationRequested)
