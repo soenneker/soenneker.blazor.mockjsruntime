@@ -6,9 +6,7 @@ using Soenneker.Blazor.MockJsRuntime.Abstract;
 
 namespace Soenneker.Blazor.MockJsRuntime;
 
-/// <summary>
-/// A simple thread-safe version of IJSRuntime for testing with Blazor
-/// </summary>
+/// <inheritdoc cref="IMockJsRuntime"/>
 public sealed class MockJsRuntime : IMockJsRuntime
 {
     private readonly ConcurrentDictionary<string, object> _mockedResults = new();
