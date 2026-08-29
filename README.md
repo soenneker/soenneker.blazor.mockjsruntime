@@ -3,16 +3,36 @@
 [![](https://img.shields.io/nuget/dt/soenneker.blazor.mockjsruntime.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.blazor.mockjsruntime/)
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.blazor.mockjsruntime/codeql.yml?label=CodeQL&style=for-the-badge)](https://github.com/soenneker/soenneker.blazor.mockjsruntime/actions/workflows/codeql.yml)
 
-# ![](https://user-images.githubusercontent.com/4441470/224455560-91ed3ee7-f510-4041-a8d2-3fc093025112.png) Soenneker.Blazor.MockJsRuntime
-### A simple threadsafe version of IJSRuntime for testing with Blazor
+# Soenneker.Blazor.MockJsRuntime
 
-## Installation
+A simple thread-safe version of IJSRuntime for testing with Blazor.
 
-```
+## Install
+
+```bash
 dotnet add package Soenneker.Blazor.MockJsRuntime
 ```
 
-## Usage
+## Quick start
+
 ```csharp
-services.AddMockJsRuntimeAsScoped()
+using Soenneker.Blazor.MockJsRuntime.Registrars;
+using Microsoft.Extensions.DependencyInjection;
+
+var services = new ServiceCollection();
+var result = services.AddMockJsRuntimeAsScoped();
 ```
+
+Adds `MockJsRuntime` as a scoped service. as `IJSRuntime`.
+
+## What you get
+
+- `IMockJsRuntime` — A simple thread-safe version of IJSRuntime for testing with Blazor.
+- `MockJsRuntimeRegistrar` — A simple threadsafe version of IJSRuntime for testing with Blazor.
+
+## API at a glance
+
+| API | What it does | Result / important behavior |
+| --- | --- | --- |
+| `IMockJsRuntime.SetupMockResult(identifier, result)` | Sets up a mocked result for a specific identifier. | Returns no value; the requested change is complete when the method returns. |
+| `MockJsRuntimeRegistrar.AddMockJsRuntimeAsScoped(services)` | Adds `MockJsRuntime` as a scoped service. as `IJSRuntime`. | The same service collection, so additional registrations can be chained. |
