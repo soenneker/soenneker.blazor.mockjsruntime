@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System;
@@ -27,7 +28,7 @@ public sealed class MockJsRuntime : IMockJsRuntime
     /// <param name="identifier">Identifier of the target value.</param>
     /// <param name="args">Command-line arguments passed to the application.</param>
     /// <returns>A task whose result is the value returned by invoke Async.</returns>
-    public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
+    public ValueTask<TValue> InvokeAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties)] TValue>(string identifier, object?[]? args)
     {
         if (_mockedResults.TryGetValue(identifier, out object? result))
             return ValueTask.FromResult(ReferenceEquals(result, _nullResult) ? default! : (TValue) result);
@@ -43,7 +44,7 @@ public sealed class MockJsRuntime : IMockJsRuntime
     /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <param name="args">Command-line arguments passed to the application.</param>
     /// <returns>A task whose result is the value returned by invoke Async.</returns>
-    public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
+    public ValueTask<TValue> InvokeAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties)] TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
     {
         if (cancellationToken.IsCancellationRequested)
             return ValueTask.FromCanceled<TValue>(cancellationToken);
